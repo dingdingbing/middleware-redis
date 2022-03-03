@@ -79,6 +79,22 @@ redis的相关面试问题实际代码操作
    1. bin log 主要是记录数据库发生insert update delete 语句
    2. redo log 主要是为了在数据库宕机之后恢复数据使用的log
    3. undo log 主要是针对数据库的事务操作的日志，比如事务中有一条insert 语句，此时会记录一条delete语句，对于每条update语句，对应一条相反的update语句，这样在程序发生错误的时候就能回滚到事务之前的数据状态
+10. MySQL中 ${} 和 #{} 的区别是什么？
+    1. ${} 相较于#{}，#{}在sql的预编译阶段会被解析成一个参数占位符 ？，而${}在sql动态解析阶段会进行变量替换
+    2. ${} 插入值，sql解析时，不带引号，#{}插入值是，在sql解析时是带引号的
+    3. 平常使用建议都使用#{}, ${}在order by 的这种动态sql中可以使用。
+    4. ’#‘ 很大程度可以避免sql注入
+    5. eg: 
+       1. select * from student where name = #{name}  --- name= 'cy'
+       2. select * from student where name = #{name}  --- name= cy
+11. select for update 是干啥的
+    1. select for update  的本意是为其数据添加排他锁， 并且select for update 的语句必须声明在事务中才有效
+    2. 如果where里的条件是走索引的，则添加的是行锁，只会锁查询结果范围内的数据；否则添加的表锁
+    3. select for update 仅针对 innodb 可用。
+    4. 并且如果没有查询到数据不加锁
+12. 描述一下悲观锁和乐观锁
+    1. 乐观锁：乐观的认为数据不会被更改，所以查询的时候不会加锁，只在数据提交的时候，判断一下数据是否被更改
+    2. 悲观锁：悲观的认为数据都可能会被更改，所以查询的时候会上表锁或者行锁，其他的流程不允许访问数据。
 
 
 

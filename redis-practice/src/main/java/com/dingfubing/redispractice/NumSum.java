@@ -3,13 +3,17 @@ package com.dingfubing.redispractice;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class NumSum {
 
+    private static ThreadLocal<String> threadLocal = new ThreadLocal<>();
     // 链表之和
     public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.execute(()-> System.out.println(1));
         int[] a = {1,2};
         int i = maxProfit(a);
         System.out.println(i);

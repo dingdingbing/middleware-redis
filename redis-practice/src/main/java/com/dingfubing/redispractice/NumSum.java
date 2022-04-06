@@ -1,7 +1,9 @@
 package com.dingfubing.redispractice;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,16 +12,38 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class NumSum {
 
     private static ThreadLocal<String> threadLocal = new ThreadLocal<>();
+
     // 链表之和
     public static void main(String[] args) {
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(()-> System.out.println(1));
-        int[] a = {1,2};
-        int i = maxProfit(a);
-        System.out.println(i);
+//        ExecutorService executorService = Executors.newFixedThreadPool(1);
+//        executorService.execute(() -> System.out.println(1));
+//        int i = maxProfit(a);
+//        System.out.println(i);
+
+        int[] a = {1, 2, 3, 4, 5};
+        int[] c = {5, 4, 3, 2, 1};
+        int[] b = {0, 0, 0, 0, 0};
+        int[] pre = new int[5];
+        int[] after = new int[5];
+        int length = a.length;
+        for (int i = 0; i < length; i++) {
+            if (i == 0) {
+                pre[i] = 1;
+            } else if (i == 1) {
+                pre[i] = a[0];
+            } else if (i == 2) {
+                pre[i] = a[1];
+            } else {
+                pre[i] = pre[i - 1] * a[i - 1];
+            }
+        }
+
+        for (int i = 0; i < length; i++) {
+            b[i] = pre[i] * after[i];
+            System.out.println(b[i]);
+        }
 
     }
-
 
     public static final int size = 10005;
 
@@ -50,7 +74,7 @@ public class NumSum {
         lowestPrice(lowest, prices);
 
         for (int i = 1; i < prices.length; i++) {
-            maxProfit = Math.max(maxProfit, prices[i] - lowest[i-1]);
+            maxProfit = Math.max(maxProfit, prices[i] - lowest[i - 1]);
         }
         return maxProfit;
     }
@@ -145,6 +169,27 @@ public class NumSum {
 
         return result.next;
     }
+
+    class LRUHashMap extends LinkedHashMap<Integer, Integer> {
+
+        private int capacity;
+
+        public LRUHashMap(int capacity) {
+            super(capacity, 0.75F, true);
+            this.capacity = capacity;
+        }
+
+        @Override
+        public Integer get(Object key) {
+            return super.getOrDefault(key, -1);
+        }
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+            return super.removeEldestEntry(eldest);
+        }
+    }
+
 
 }
 

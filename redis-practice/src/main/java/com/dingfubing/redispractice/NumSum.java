@@ -13,37 +13,28 @@ public class NumSum {
 
     private static ThreadLocal<String> threadLocal = new ThreadLocal<>();
 
-    // 链表之和
-    public static void main(String[] args) {
-//        ExecutorService executorService = Executors.newFixedThreadPool(1);
-//        executorService.execute(() -> System.out.println(1));
-//        int i = maxProfit(a);
-//        System.out.println(i);
 
-        int[] a = {1, 2, 3, 4, 5};
-        int[] c = {5, 4, 3, 2, 1};
-        int[] b = {0, 0, 0, 0, 0};
-        int[] pre = new int[5];
-        int[] after = new int[5];
-        int length = a.length;
-        for (int i = 0; i < length; i++) {
-            if (i == 0) {
-                pre[i] = 1;
-            } else if (i == 1) {
-                pre[i] = a[0];
-            } else if (i == 2) {
-                pre[i] = a[1];
-            } else {
-                pre[i] = pre[i - 1] * a[i - 1];
-            }
+    public static int[] constructArr(int[] a) {
+        if (a.length == 0) {
+            return new int[]{};
+        }
+        if (a.length == 1) {
+            return new int[]{a[0]};
+        }
+        int[] b = new int[a.length];
+        b[0] = 1;
+        for (int i = 1; i < a.length; i++) {
+            b[i] = b[i - 1] * a[i - 1];
         }
 
-        for (int i = 0; i < length; i++) {
-            b[i] = pre[i] * after[i];
-            System.out.println(b[i]);
+        int temp = 1; // 5
+        for (int i = a.length - 2; i >= 0; i--) {
+            temp = a[i + 1] * temp;
+            b[i] = b[i] * temp;
         }
-
+        return b;
     }
+
 
     public static final int size = 10005;
 
@@ -122,6 +113,84 @@ public class NumSum {
 
         return s.substring(begin, begin + maxLen);
     }
+
+
+    public static String longestPalindrome(String s) {
+        if (s.length() == 0 || s.length() == 1) {
+            return s;
+        }
+
+        int maxLength = 0;
+        int begin = 0;
+        char[] chars = s.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            // 可能存在单字回文 和双字回文
+            int single = calc(chars, i, i);
+            int dou = calc(chars, i, i + 1);
+            int max = Math.max(single, dou);
+            if (max > maxLength) {
+                maxLength = max;
+                begin = i - (max - 1) / 2;
+            }
+        }
+
+        return s.substring(begin, begin + maxLength);
+    }
+
+    // 返回长度
+    public static int calc(char[] a, int i, int j) {
+        int length = a.length;
+        while (i >= 0 && j < length) {
+            if (a[i] == a[j]) {
+                i--;
+                j++;
+            } else {
+                break;
+            }
+        }
+        return j - i - 1;
+    }
+
+
+    public static void main(String[] args) {
+        String s = "abcdefghijklmn";
+        String convert = convert(s, 4);
+        System.out.println(convert);
+    }
+
+    public static String convert(String s, int numRows) {
+        int length = s.length();
+        if (length < numRows) {
+            return s;
+        }
+        char[] chars = s.toCharArray();
+        int j = length / (2 * numRows - 2) * (numRows - 1) + (length % (2 * numRows - 2) < numRows ? 0 : length % (2 * numRows - 2) - numRows) + 1;
+        int[][] result = new int[numRows][j];
+
+        int tempI = 0;
+        int tempJ = 0;
+
+        for (int i = 0; i < length; i++) {
+            result[tempI][tempJ] = chars[i];
+            if (i % (2 * numRows - 2) < numRows) {
+                tempI++;
+
+            } else {
+                tempI--;
+                tempJ++;
+            }
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int[] ints : result) {
+            for (int anInt : ints) {
+                if (anInt != 0) {
+                    stringBuilder.append(anInt);
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
 
     public static int getInt(char[] chars, int i, int j) {
 

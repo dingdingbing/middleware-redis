@@ -159,12 +159,14 @@ A继续进行操作，由于之前已经进行了Hash冲突的判断，所以会
    1. 有的，比如我才来钢银的时候，我被分配了一个改造确认收货功能的需求，改造的内容包括确认收货页面的调整，接入第三方电子签章功能，支持批量确认收货，困难的点在于改造确认收货页面，这个页面是前后端未分离页面，所以需要后端自己操作，页面的设计和实际编码花费了较多时间，第二个困难的点在于接入第三方签章系统，阅读第三方的API文档，完成联调沟通交流
    2. 为了接入公司物流部门的一个电子围栏功能，作为订单创建方，我们需要在所有可以添加物流的地方通知物流部门，告知其收货地址的经纬度，为了这个经纬度，引入了高德地图完成选择收货地址的功能，其中高德地图功能的引入由我一个人负责，困难的地方在于没有成形的案例，需要我这边从0-1完成功能，也是在官网和网上找了很多个
 2. 说说你遇到过的设计模式
-   1. 单例模式
-   2. 工厂模式
+   1. 单例模式 spring 使用的是concurrentHashMap实现的特殊的单例模式 @scope(value = ''singleton', ''prototype', ''session', ''request')
+   2. 工厂模式 BeanFactory
    3. 代理模式
    4. 适配器模式
    5. 策略模式
-   6. 模板方法模式
+   6. 模板方法模式 - redisTemplate jdbcTemplate..
+   7. 建造者模式 - stringBuilder stringBuffer extends AbstractStringBuilder
+   8. 观察者模式 - ApplicationEvent ApplicationListener -use applicationContext.publishEvent
 ![img.png](img.png)
 3. 订单号是如何生成的？
    1. 我们的订单号的一般结构是CS + 当前年 + 当前月 + 当前日 + X + 这是今年下的第多少笔订单，他的实现是通过乐观锁 + 悲观锁实现的，创建订单的时候我们会调用一个序列化的服务生成订单号，这张表的字段有id name value time version  lastaccess 6个字段，name是指业务线的名称，value是指返回的值，time是指将数据置0的条件，比如我们订单号，此时传入参数就是 业务线的名称，和 time 2022。 首先会更新name查询这条数据是否被创建，如果没有创建则创建数据，name 和time都知道，初始化value值为0，如果已经存在，则判断time是否相同，time如果不同，则置0操作，然后进行更新数据，更新的只要是对value进行+1操作，更新一下lastaccess字段。此外，在更新时如果更新失败了，抛出sqlException，如果catch到sqlException或者duplicateKeyException 则进行一个悲观锁更新操作，这里使用的是编程式事务进行操作，并且查询的地方换成了 select for update 此时再进行判断是否需要置0和更新操作。

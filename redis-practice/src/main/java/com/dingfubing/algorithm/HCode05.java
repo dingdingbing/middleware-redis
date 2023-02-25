@@ -38,16 +38,16 @@ public class HCode05 {
         for (int i = 0; i < integers.size(); i++) {
             int y = integers.get(i);
             int left = 0, right = nums.length - 1;
-            while (left < right) {
-                while (left < right && )
-                if (nums[right] + nums[left] > y) {
-                    if (nums[right] != y) {
-                        break;
-                    } else {
-                        right--;
-                    }
-                }
-            }
+//            while (left < right) {
+//                while (left < right && )
+//                if (nums[right] + nums[left] > y) {
+//                    if (nums[right] != y) {
+//                        break;
+//                    } else {
+//                        right--;
+//                    }
+//                }
+//            }
         }
 
     }

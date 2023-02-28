@@ -1,6 +1,5 @@
-package com.dingfubing.algorithm;
+package com.dingfubing.deadLock;
 
-import java.util.Objects;
 import lombok.SneakyThrows;
 
 /**
